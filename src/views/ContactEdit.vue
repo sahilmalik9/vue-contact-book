@@ -15,6 +15,11 @@
       <input id="email" type="email" v-model="email" required />
       <p v-if="emailError" class="error-msg">Valid email is required.</p>
 
+      <!-- Mobile Number Field -->
+      <label for="mobile" class="form-label">Mobile Number</label>
+      <input id="mobile" type="tel" v-model="mobile" placeholder="123-456-7890" />
+      <p v-if="mobileError" class="error-msg">Mobile number must be 10 digits.</p>
+
       <div class="buttons-row">
         <button type="submit" class="btn">Save Changes</button>
         <router-link :to="`/contact/${contact.id}`" class="btn back-btn">Cancel</router-link>
@@ -44,9 +49,12 @@ export default {
     const firstName = ref('')
     const lastName = ref('')
     const email = ref('')
+    const mobile = ref('')
+
     const firstNameError = ref(false)
     const lastNameError = ref(false)
     const emailError = ref(false)
+    const mobileError = ref(false)
 
     onMounted(() => {
       const c = getContactById(route.params.id)
@@ -55,6 +63,7 @@ export default {
         firstName.value = c.firstName
         lastName.value = c.lastName
         email.value = c.email
+        mobile.value = c.mobile || ''
       }
     })
 
@@ -63,13 +72,17 @@ export default {
       lastNameError.value = !lastName.value.trim()
       emailError.value = !email.value.includes('@')
 
-      if (firstNameError.value || lastNameError.value || emailError.value) return
+      const mobilePattern = /^\d{10}$/
+      mobileError.value = mobile.value.trim() !== '' && !mobilePattern.test(mobile.value.trim())
+
+      if (firstNameError.value || lastNameError.value || emailError.value || mobileError.value) return
 
       updateContact({
         id: contact.value.id,
         firstName: firstName.value.trim(),
         lastName: lastName.value.trim(),
         email: email.value.trim(),
+        mobile: mobile.value.trim(),
       })
 
       router.push(`/contact/${contact.value.id}`)
@@ -80,10 +93,12 @@ export default {
       firstName,
       lastName,
       email,
+      mobile,
       submitForm,
       firstNameError,
       lastNameError,
       emailError,
+      mobileError,
     }
   },
 }

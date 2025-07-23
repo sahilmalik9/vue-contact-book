@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router' // CHANGED HERE
 import ContactList from '../views/ContactList.vue'
 import ContactDetails from '../views/ContactDetails.vue'
 import ContactAdd from '../views/ContactAdd.vue'
@@ -12,7 +12,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(), // CHANGED HERE
   routes,
 })
 

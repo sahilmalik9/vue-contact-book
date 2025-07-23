@@ -15,6 +15,11 @@
       <input id="email" type="email" v-model="email" required />
       <p v-if="emailError" class="error-msg">Valid email is required.</p>
 
+      <!-- New Mobile Number Field -->
+      <label for="mobile" class="form-label">Mobile Number</label>
+      <input id="mobile" type="tel" v-model="mobile" placeholder="123-456-7890" />
+      <p v-if="mobileError" class="error-msg">Mobile number must be 10 digits.</p>
+
       <div class="buttons-row">
         <button type="submit" class="btn">Add Contact</button>
         <router-link to="/" class="btn back-btn">Cancel</router-link>
@@ -33,10 +38,12 @@ export default {
     const firstName = ref('')
     const lastName = ref('')
     const email = ref('')
+    const mobile = ref('')
 
     const firstNameError = ref(false)
     const lastNameError = ref(false)
     const emailError = ref(false)
+    const mobileError = ref(false)
 
     const router = useRouter()
     const { addContact } = useContacts()
@@ -46,7 +53,11 @@ export default {
       lastNameError.value = !lastName.value.trim()
       emailError.value = !email.value.includes('@')
 
-      if (firstNameError.value || lastNameError.value || emailError.value) return
+      // Mobile validation: optional but if provided, must be 10 digits (numbers only)
+      const mobilePattern = /^\d{10}$/
+      mobileError.value = mobile.value.trim() !== '' && !mobilePattern.test(mobile.value.trim())
+
+      if (firstNameError.value || lastNameError.value || emailError.value || mobileError.value) return
 
       const id = Date.now().toString()
 
@@ -55,6 +66,7 @@ export default {
         firstName: firstName.value.trim(),
         lastName: lastName.value.trim(),
         email: email.value.trim(),
+        mobile: mobile.value.trim(),
       })
 
       router.push(`/contact/${id}`)
@@ -64,10 +76,12 @@ export default {
       firstName,
       lastName,
       email,
+      mobile,
       submitForm,
       firstNameError,
       lastNameError,
       emailError,
+      mobileError,
     }
   },
 }
